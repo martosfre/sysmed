@@ -33,9 +33,13 @@ public class IndexBean implements Serializable {
     @Getter
     @Setter
     private boolean banError;
+    @Getter
+    @Setter
+    private String estiloBoton;
 
     public IndexBean() {
         this.txtNomUsu = "admin";
+        this.estiloBoton = "margin-left: 40%;";
     }
 
     /**
@@ -60,6 +64,15 @@ public class IndexBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, mensajeJSF);
             banError = true;
             return null;
+        }
+    }
+
+    public void cambiarEtiqueta() {
+
+        if (txtNomUsu.equals("admin")) {
+            estiloBoton = "margin-left: 40%; color:white; background-color:red";
+        }else{
+              this.estiloBoton = "margin-left: 40%;";
         }
     }
 

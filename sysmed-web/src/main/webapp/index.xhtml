@@ -16,13 +16,15 @@
                 </f:facet>
                 <h:outputLabel for="txtNomUsu" value="Usuario:" styleClass="etiqueta"/>
                 <h:inputText id="txtNomUsu" value="#{indexBean.txtNomUsu}" maxlength="10" required="true" 
-                             requiredMessage="Usuario requerido"/>
+                             requiredMessage="Usuario requerido">
+                    <f:ajax event="blur" execute="txtNomUsu" listener="#{indexBean.cambiarEtiqueta}" render=":frmLog:btIng"/>
+                </h:inputText>
                 <h:outputLabel for="txtClaUsu" value="Clave:" styleClass="etiqueta"/>
                 <h:inputSecret id="txtClaUsu" value="#{indexBean.txtClaUsu}" maxlength="10" required="true" 
                                requiredMessage="Clave requerida"/>
             </h:panelGrid>
             <br></br>
-            <h:commandButton value="Ingresar" action="#{indexBean.validarUsuario}" style="margin-left: 47%;"/>
+            <h:commandButton id="btnIng" value="Ingresar" action="#{indexBean.validarUsuario}" style="#{indexBean.estiloBoton}"/>
             <br></br>
             <h:messages styleClass="#{indexBean.banError eq true ? 'mensajeError' :'mensajeInformacion'}"/>
         </h:form>
