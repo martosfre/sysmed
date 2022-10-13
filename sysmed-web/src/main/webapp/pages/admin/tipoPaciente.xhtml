@@ -18,8 +18,9 @@
                                      update="panGriTipPac datTabTipPac menGen" icon="pi pi-file"/> <!-- PrimeIcons -->
                     <p:commandButton value="Guardar" process="@this panGriTipPac" actionListener="#{tipoPacienteBean.guardar}" 
                                      update="panGriTipPac datTabTipPac menGen" icon="far fa-save"/> <!-- FontAwesome -->
-                    <p:commandButton value="Editar" icon="far fa-edit"/>
-                    <p:commandButton value="Eliminar" icon="fas fa-trash"/>
+                    <p:commandButton value="Editar" process="@this" actionListener="#{tipoPacienteBean.editar}" 
+                                     update="panGriTipPac menGen" icon="far fa-edit"/>
+                    <p:commandButton value="Eliminar" onclick="PF('diaCon').show();" icon="fas fa-trash"/>
                 </p:toolbarGroup>
             </p:toolbar>
             <br></br>
@@ -39,6 +40,7 @@
                 <f:facet name="header">
                     <h:outputLabel value="Lista de Pacientes"/>
                 </f:facet>
+                <p:ajax event="rowSelect" listener="#{tipoPacienteBean.seleccionarFila}"/>
                 <p:column headerText="Nombre">
                     <h:outputLabel value="#{tipPac.nombreTippac}"/>
                 </p:column>
@@ -48,4 +50,14 @@
             </p:dataTable>
         </h:form>
     </ui:define>
+    <ui:define name="mensaje"> <!-- Mensajes modales -->
+        <p:confirmDialog widgetVar="diaCon" header="Confirmación Eliminación" 
+                         message="Está seguro de eliminar el registro?">
+            <p:commandButton value="Si" process="@this" actionListener="#{tipoPacienteBean.eliminar}"
+                             update="datTabTipPac menGen" oncomplete="PF('diaCon').hide();"/>
+            <p:commandButton value="No" process="@this" actionListener="#{tipoPacienteBean.resetearFormulario}"
+                             update="datTabTipPac" oncomplete="PF('diaCon').hide();"/>
+        </p:confirmDialog>
+    </ui:define>
+
 </ui:composition>

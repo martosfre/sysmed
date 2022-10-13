@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -75,15 +76,53 @@ public class TipoPacienteBean extends AbstractManagedBean implements Serializabl
     }
 
     /**
+     * Seleccionar una fila (tipo de paciente) de la tabla
+     *
+     * @param ev
+     */
+    public void seleccionarFila(SelectEvent<TipoPaciente> ev) {
+        this.tipoPacienteSel = ev.getObject();
+    }
+
+    /**
+     * Método para cargar el tipo de paciente
+     */
+    public void editar() {
+        if (tipoPacienteSel != null) {
+            this.tipoPaciente = tipoPacienteSel;
+        } else {
+            anadirError("Se debe seleccionar un registro");
+        }
+    }
+
+    /**
+     * Método para eliminar un tipo de paciente
+     */
+    public void eliminar() {
+        try {
+            if (tipoPacienteSel != null) {
+                adminTipoPaciente.eliminar(tipoPacienteSel);
+                anadirInfo("Tipo de paciente elminado correctamente");
+            } else {
+                anadirError("Se debe seleccionar un registro");
+            }
+            resetearFormulario();
+            cargarTiposPacientes();
+        } catch (Exception e) {
+            anadirError("Error al eliminar un tipo de paciente:" + e.getMessage());
+        }
+    }
+
+    /**
      * Método para limpiar el formulario
      */
     public void resetearFormulario() {
         this.tipoPaciente = new TipoPaciente();
         this.tipoPacienteSel = null;
     }
-    
+
     @PostConstruct
-    public void inicializar(){
+    public void inicializar() {
         cargarTiposPacientes();
     }
 }
