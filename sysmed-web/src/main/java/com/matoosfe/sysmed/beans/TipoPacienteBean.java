@@ -4,9 +4,15 @@
  */
 package com.matoosfe.sysmed.beans;
 
+import com.matoosfe.sysmed.beans.util.AbstractManagedBean;
+import com.matoosfe.sysmed.controllers.TipoPacienteFacade;
 import com.matoosfe.sysmed.entities.TipoPaciente;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +23,67 @@ import lombok.Setter;
  */
 @Named
 @ViewScoped
-public class TipoPacienteBean implements Serializable{
-    @Getter @Setter
+public class TipoPacienteBean extends AbstractManagedBean implements Serializable {
+
+    @Getter
+    @Setter
     private TipoPaciente tipoPaciente;
+    @Getter
+    @Setter
+    private TipoPaciente tipoPacienteSel; //Seleccionar una fila en la tabla
+
+    @Getter
+    @Setter
+    private List<TipoPaciente> listaTipoPacientes;
+
+    @Inject
+    private TipoPacienteFacade adminTipoPaciente;
 
     public TipoPacienteBean() {
         this.tipoPaciente = new TipoPaciente();
+        this.listaTipoPacientes = new ArrayList<>();
+    }
+
+    /**
+     * Método para guardar o actualizar un tipo de paciente
+     */
+    public void guardar() {
+        try {
+            if (tipoPaciente.getIdTippac() != null) {
+                //Llamando al controlador (EJB)
+                adminTipoPaciente.actualizar(tipoPaciente);
+                //Mensaje de Actualización
+                anadirInfo("Tipo de paciente actualizado correctamente");
+            } else {
+                adminTipoPaciente.guardar(tipoPaciente);
+                //Mensaje de Guardar
+                anadirInfo("Tipo de paciente guardado correctamente");
+            }
+            cargarTiposPacientes();
+            resetearFormulario();
+        } catch (Exception e) {
+            //Mensaje de error
+            anadirError("Error al procesar operación:" + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para cargar los tipos de pacientes
+     */
+    private void cargarTiposPacientes() {
+        this.listaTipoPacientes = adminTipoPaciente.buscarTodos();
+    }
+
+    /**
+     * Método para limpiar el formulario
+     */
+    public void resetearFormulario() {
+        this.tipoPaciente = new TipoPaciente();
+        this.tipoPacienteSel = null;
     }
     
+    @PostConstruct
+    public void inicializar(){
+        cargarTiposPacientes();
+    }
 }
