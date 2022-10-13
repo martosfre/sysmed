@@ -27,10 +27,9 @@ public class PrincipalBean implements Serializable {
         layoutOptions = new LayoutOptions();
 
         // options for all panes (center and west)
-        LayoutOptions panes = new LayoutOptions();
-        panes.addOption("slidable", false);
-        panes.addOption("resizeWhileDragging", true);
-        layoutOptions.setPanesOptions(panes);
+        LayoutOptions paneMenu = new LayoutOptions();
+        paneMenu.addOption("slidable", false);
+        layoutOptions.setWestOptions(paneMenu);
     }
 
 }

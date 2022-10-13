@@ -7,13 +7,39 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="/WEB-INF/templates/template.xhtml">
     <ui:define  name="contenido">
-        <p:toolbar>
-            <p:toolbarGroup align="left">
-                <p:outputLabel value="Administración Tipo de Paciente"/>
-            </p:toolbarGroup>
-             <p:toolbarGroup align="right">
-                 <p:commandButton value="Nuevo"/>
-            </p:toolbarGroup>
-        </p:toolbar>
+        <h:form prependId="false">
+            <p:toolbar>
+                <p:toolbarGroup align="left">
+                    <p:outputLabel value="Administración Tipo de Paciente"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:commandButton value="Nuevo" icon="pi pi-file"/> <!-- PrimeIcons -->
+                    <p:commandButton value="Guardar" icon="far fa-save"/> <!-- FontAwesome -->
+                    <p:commandButton value="Editar" icon="far fa-edit"/>
+                    <p:commandButton value="Eliminar" icon="fas fa-trash"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <br></br>
+            <p:panelGrid id="panGriTipPac" columns="4" style="width:100%">
+                <p:outputLabel for="txtNomTipPac" value="Nombre:"/>
+                <p:inputText id="txtNomTipPac" maxlength="25" required="true"/>
+                <p:outputLabel for="txaDesTipPac" value="Descripción:"/>
+                <p:inputTextarea id="txaDesTipPac" maxlength="300" required="true"
+                                 cols="15" rows="5"/>
+            </p:panelGrid>
+            <br></br>
+            <p:dataTable id="datTabTipPac" selectionMode="single" paginator="true" rows="5"
+                         paginatorPosition="bottom">
+                <f:facet name="header">
+                    <h:outputLabel value="Lista de Pacientes"/>
+                </f:facet>
+                <p:column headerText="Nombre">
+                    
+                </p:column>
+                <p:column headerText="Descripción">
+                    
+                </p:column>
+            </p:dataTable>
+        </h:form>
     </ui:define>
 </ui:composition>

@@ -64,6 +64,13 @@
             <artifactId>gson</artifactId>
             <version>2.9.1</version>
         </dependency>
+        
+        <!-- (1) Iconos Fontawesome  -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.12.0</version>
+        </dependency>
 
         
     </dependencies>
