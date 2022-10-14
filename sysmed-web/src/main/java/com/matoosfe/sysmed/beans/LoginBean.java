@@ -5,7 +5,10 @@
 package com.matoosfe.sysmed.beans;
 
 import com.matoosfe.sysmed.entities.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -19,26 +22,35 @@ import lombok.Setter;
  */
 @Named
 @SessionScoped
-public class LoginBean implements Serializable{
-    @Getter @Setter
+public class LoginBean implements Serializable {
+
+    @Getter
+    @Setter
     private Usuario usuario;
 
     public LoginBean() {
         this.usuario = new Usuario(); //Registro
     }
-    
+
     /**
      * Método para validar el usuario
      */
-    public void validarUsuario(){
-         FacesMessage mensajeJSF = new FacesMessage();
+    public void validarUsuario() {
+        FacesMessage mensajeJSF = new FacesMessage();
 
         if (usuario.getNombreUsu().equals("admin") && usuario.getClaveUsu().equals("1234")) {
             //Mensaje de Información
             mensajeJSF.setSummary("Usuario correcto, bienvenido!!");
             mensajeJSF.setSeverity(FacesMessage.SEVERITY_INFO);
             FacesContext.getCurrentInstance().addMessage(null, mensajeJSF);
-            //Redireccionar
+            try {
+                //Redireccionar
+                FacesContext.getCurrentInstance().getExternalContext().redirect("./pages/principal.mat");
+            } catch (IOException ex) {
+                mensajeJSF.setSummary("No se pudo redireccionar al menú principal:" + ex.getMessage());
+                mensajeJSF.setSeverity(FacesMessage.SEVERITY_ERROR);
+                FacesContext.getCurrentInstance().addMessage(null, mensajeJSF);
+            }
         } else {
             //Mensaje de Error
             mensajeJSF.setSummary("Credenciales Incorrectas");
@@ -47,5 +59,5 @@ public class LoginBean implements Serializable{
             //Redireccionar
         }
     }
-    
+
 }
