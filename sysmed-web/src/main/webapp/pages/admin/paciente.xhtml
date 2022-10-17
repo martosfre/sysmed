@@ -7,35 +7,129 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/WEB-INF/templates/template.xhtml">
     <ui:define name="contenido">
-        <p:toolbar>
-            <p:toolbarGroup align="right">
-                <h:outputLabel value="Administración de Paciente"/>
-            </p:toolbarGroup>
-            <p:toolbarGroup align="left">
-                <p:commandButton value="Nuevo"/>
-                <p:commandButton value="Guardar"/>
-                <p:commandButton value="Editar"/>
-                <p:commandButton value="Eliminar"/>
-            </p:toolbarGroup>
-        </p:toolbar>
-        <br></br>
-        <p:panelGrid id="panGriBusPac" columns="3" style="width:100%">
-            <f:facet name="header">
-                <h:outputLabel value="Buscar Paciente"/>
-            </f:facet>
-            <p:outputLabel for="txtIdeApePac" value="Identificacion/Apellido:"/>
-            <p:inputText id="txtIdeApePac" maxlength="25" required="true"/>
-            <p:commandButton value="Buscar"/>
-        </p:panelGrid>
-        <br></br>
-        <p:dataTable id="datTabPac">
-            <f:facet name="header">
-                <h:outputLabel value="Lista de Pacientes"/>
-            </f:facet>
-            <p:column headerText="Identificación">
+        <h:form prependId="false">
+            <p:growl id="menGen"/>
+            <p:toolbar>
+                <p:toolbarGroup align="right">
+                    <h:outputLabel value="Administración de Paciente"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="left">
+                    <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePa').show();"/>
+                    <p:commandButton icon="far fa-edit" value="Editar"/>
+                    <p:commandButton icon="fas fa-trash" value="Eliminar"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <br></br>
+            <p:panelGrid id="panGriBusPac" columns="3" style="width:100%">
+                <f:facet name="header">
+                    <h:outputLabel value="Buscar Paciente"/>
+                </f:facet>
+                <p:outputLabel for="txtIdeApePac" value="Identificacion/Apellido:"/>
+                <p:inputText id="txtIdeApePac" value="#{pacienteBean.identificacionApellido}"
+                             maxlength="25" required="true"/>
+                <p:commandButton icon="fas fa-search" value="Buscar" process="@this txtIdeApePac" 
+                                 actionListener="#{pacienteBean.buscarPacientes}" update="datTabPac menGen"/>
+            </p:panelGrid>
+            <br></br>
+            <p:dataTable id="datTabPac" value="#{pacienteBean.listaPacientes}" var="pac"
+                         selectionMode="single" rowKey="#{pac.idPac}" paginator="10"
+                         widgetVar="widDatTabPac">
 
-            </p:column>
-        </p:dataTable>
+                <f:facet name="header">
+                    <div class="flex justify-content-between align-items-center">
+                        <h:outputLabel value="Lista de Pacientes"/>
+
+                        <div>
+                            <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                            <p:columnToggler datasource="datTabPac" trigger="toggler">
+                                <p:ajax />
+                            </p:columnToggler>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('widDatTabPac').filter()" styleClass="ui-custom-filter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputLabel value="#{pac.idTippac.nombreTippac}"/>  
+                </p:column>
+                <p:column headerText="Identificación" filterBy="#{pac.identificacionPac}" filterMatchMode="startsWith">
+                    <h:outputLabel value="#{pac.identificacionPac}"/>
+                </p:column>
+                <p:column headerText="Nombre">
+                    <h:outputLabel value="#{pac.nombrePac}"/>
+                </p:column>
+                <p:column headerText="Apellido Paterno" filterBy="#{pac.apellidoPaternoPac}" filterMatchMode="contains">
+                    <h:outputLabel value="#{pac.apellidoPaternoPac}"/>
+                </p:column>
+                <p:column headerText="Apellido Materno">
+                    <h:outputLabel value="#{pac.apellidoMaternoPac}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+    <ui:define name="mensaje">
+        <p:dialog widgetVar="diaNuePa" header="Gestionar Paciente" width="874px" modal="true">
+            <p:panelGrid id="panGriNuePac" columns="4" style="width:100%">
+                <p:outputLabel for="cmbTipPac" value="Tipo de Paciente:"/>
+                <p:selectOneMenu id="cmbTipPac" value="#{pacienteBean.idTipPac}" required="true">
+                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true" />
+                    <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
+                </p:selectOneMenu>
+                <p:outputLabel for="cmbTipPacCon" value="Tipo de Paciente Conv:"/>
+                <p:selectOneMenu id="cmbTipPacCon">
+                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true" />
+                    <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
+                </p:selectOneMenu>
+                <p:outputLabel for="cmbTipIde" value="Tipo de Identificación:"/>
+                <p:selectOneMenu id="cmbTipIde" value="#{pacienteBean.tipoIden}">
+                    <p:ajax event="change" listener="#{pacienteBean.actualizarMascaraIdentificacion}"
+                            update="txtIdePac"/>
+                    <f:selectItem itemLabel="Cédula" itemValue="CED"/>
+                    <f:selectItem itemLabel="Ruc" itemValue="RUC"/>
+                    <f:selectItem itemLabel="Pasaporte" itemValue="PAS"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="txtIdePac" value="Identificación:"/>
+                <p:inputMask id="txtIdePac" value="#{pacienteBean.paciente.identificacionPac}" 
+                             maxlength="13" required="true" mask="#{pacienteBean.mascaraIden}"/>
+                <p:outputLabel for="txtNomPac" value="Nombre:"/>
+                <p:inputText id="txtNomPac" value="#{pacienteBean.paciente.nombrePac}"
+                             maxlength="13" required="true"/>
+                <p:outputLabel for="txtApePatPac" value="Apellido Paterno:"/>
+                <p:inputText id="txtApePatPac" value="#{pacienteBean.paciente.apellidoPaternoPac}" 
+                             maxlength="13" required="true"/>
+                <p:outputLabel for="txtApeMatPac" value="Apellido Materno:"/>
+                <p:inputText id="txtApeMatPac" value="#{pacienteBean.paciente.apellidoMaternoPac}" 
+                             maxlength="13" required="true"/>
+                <p:outputLabel for="txaDirPac" value="Dirección:"/>
+                <p:inputTextarea id="txaDirPac" value="#{pacienteBean.paciente.direccionPac}" 
+                                 rows="5" cols="20" required="true"/>
+                <p:outputLabel for="txtTelCelPac" value="Teléfono Celular:"/>
+                <p:inputText id="txtTelCelPac" value="#{pacienteBean.paciente.telefonoCelularPac}" 
+                             maxlength="10" required="true">
+                    <f:validator validatorId="valTel"/>
+                </p:inputText>
+                <p:outputLabel for="txtCorPac" value="Correo:"/>
+                <p:inputText id="txtCorPac" value="#{pacienteBean.paciente.correoPac}" 
+                             maxlength="50" required="true" validatorMessage="Correo Incorrecto">
+                    <f:validateRegex pattern="[a-z0-9]+@[a-z]+\.[a-z]{2,3}"/>
+                </p:inputText>
+                <p:outputLabel for="calFecNacPac" value="Fecha Nacimiento:"/>
+                <p:calendar id="calFecNacPac" value="#{pacienteBean.paciente.fechaNacimientoPac}" 
+                            required="true" pattern="yyyy-MM-dd"/>
+                <p:outputLabel for="graFotPac" value="Foto:"/>
+                <p:graphicImage id="graFotPac" value="#{pacienteBean.pathImagen}" width="100"/>
+            </p:panelGrid>
+            <p:panelGrid columns="2" style="width: 100%">
+                <p:commandButton icon="far fa-save" value="Guardar"  process="@this :frmMen:panGriNuePac"
+                                 actionListener="#{pacienteBean.guardar}" update=":frmMen:panGriNuePac datTabPac menGen"/>
+                <p:commandButton icon="far fa-save" value="Guardar Conv"/>
+            </p:panelGrid>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>
