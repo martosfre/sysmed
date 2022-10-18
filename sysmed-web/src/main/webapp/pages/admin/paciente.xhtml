@@ -14,7 +14,7 @@
                     <h:outputLabel value="Administración de Paciente"/>
                 </p:toolbarGroup>
                 <p:toolbarGroup align="left">
-                    <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePa').show();"/>
+                    <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePac').show();"/>
                     <p:commandButton icon="far fa-edit" value="Editar"/>
                     <p:commandButton icon="fas fa-trash" value="Eliminar"/>
                 </p:toolbarGroup>
@@ -47,12 +47,12 @@
                         </div>
                     </div>
                 </f:facet>
-
-                <p:column headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
+                
+                <p:column field="idTippac"  headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('widDatTabPac').filter()" styleClass="ui-custom-filter">
                             <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
-                            <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
+                            <f:selectItems value="#{pacienteBean.listaTipoPacientesObj}" />
                         </p:selectOneMenu>
                     </f:facet>
                     <h:outputLabel value="#{pac.idTippac.nombreTippac}"/>  
@@ -73,7 +73,7 @@
         </h:form>
     </ui:define>
     <ui:define name="mensaje">
-        <p:dialog widgetVar="diaNuePa" header="Gestionar Paciente" width="874px" modal="true">
+        <p:dialog widgetVar="diaNuePac" header="Gestionar Paciente" width="874px" modal="true">
             <p:panelGrid id="panGriNuePac" columns="4" style="width:100%">
                 <p:outputLabel for="cmbTipPac" value="Tipo de Paciente:"/>
                 <p:selectOneMenu id="cmbTipPac" value="#{pacienteBean.idTipPac}" required="true">

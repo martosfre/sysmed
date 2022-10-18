@@ -27,7 +27,7 @@ import lombok.Setter;
 @Named
 @ViewScoped
 public class PacienteBean extends AbstractManagedBean implements Serializable {
-
+    
     @Getter
     @Setter
     private Paciente paciente;
@@ -58,12 +58,12 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
     @Getter
     @Setter
     private String pathImagen;
-
+    
     @Inject
     private PacienteFacade adminPaciente;
     @Inject
     private TipoPacienteFacade adminTipoPaciente;
-
+    
     public PacienteBean() {
         this.paciente = new Paciente();
         this.listaPacientes = new ArrayList<>();
@@ -78,7 +78,14 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
      * Método para buscar pacientes
      */
     public void buscarPacientes() {
-
+        try {
+            this.listaPacientes = adminPaciente.buscarIdentificacionApellido(identificacionApellido);
+            if(listaPacientes.isEmpty()){
+                anadirInfo("No existen pacientes con ese criterio");
+            }
+        } catch (Exception e) {
+            anadirError("Error al buscar los pacientes con ese criterio:" + e.getMessage());
+        }
     }
 
     /**
@@ -122,7 +129,7 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
             //Recuperar el tipo de paciente y seteandole a paciente
             TipoPaciente tipoPaciente = adminTipoPaciente.buscarPorId(idTipPac);
             paciente.setIdTippac(tipoPaciente);
-
+            
             if (paciente.getIdPac() != null) {
                 adminPaciente.actualizar(paciente);
                 anadirInfo("Paciente actualizado correctamente");
@@ -162,10 +169,10 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
         this.pacienteSel = null;
         this.idTipPac = 0;
     }
-
+    
     @PostConstruct
     public void inicializar() {
         cargarTipoPacientes();
     }
-
+    
 }
