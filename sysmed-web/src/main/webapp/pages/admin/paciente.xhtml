@@ -81,9 +81,12 @@
                     <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
                 </p:selectOneMenu>
                 <p:outputLabel for="cmbTipPacCon" value="Tipo de Paciente Conv:"/>
-                <p:selectOneMenu id="cmbTipPacCon">
-                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true" />
-                    <f:selectItems value="#{pacienteBean.listaTipoPacientes}" />
+                <p:selectOneMenu id="cmbTipPacCon" value="#{pacienteBean.paciente.idTippac}" 
+                                 required="true"
+                                 converter="#{convTipPac}" converterMessage="Error al convertir tipo de paciente">
+                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                    <f:selectItems value="#{pacienteBean.listaTipoPacientesObj}" var="tipPac" itemLabel="#{tipPac.nombreTippac}"
+                                   itemValue="#{tipPac}" />
                 </p:selectOneMenu>
                 <p:outputLabel for="cmbTipIde" value="Tipo de Identificación:"/>
                 <p:selectOneMenu id="cmbTipIde" value="#{pacienteBean.tipoIden}">
@@ -126,8 +129,11 @@
             </p:panelGrid>
             <p:panelGrid columns="2" style="width: 100%">
                 <p:commandButton icon="far fa-save" value="Guardar"  process="@this :frmMen:panGriNuePac"
-                                 actionListener="#{pacienteBean.guardar}" update=":frmMen:panGriNuePac datTabPac menGen"/>
-                <p:commandButton icon="far fa-save" value="Guardar Conv"/>
+                                 actionListener="#{pacienteBean.guardar}" update=":frmMen:panGriNuePac datTabPac menGen"
+                                 oncomplete="PF('diaNuePac').hide();"/>
+                <p:commandButton icon="far fa-save" value="Guardar Conv" process="@this :frmMen:panGriNuePac"
+                                 actionListener="#{pacienteBean.guardarConvertidor}" update=":frmMen:panGriNuePac datTabPac menGen"
+                                 oncomplete="PF('diaNuePac').hide();"/>
             </p:panelGrid>
         </p:dialog>
     </ui:define>

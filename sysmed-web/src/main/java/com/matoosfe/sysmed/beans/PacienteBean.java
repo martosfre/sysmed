@@ -8,6 +8,7 @@ import com.matoosfe.sysmed.beans.util.AbstractManagedBean;
 import com.matoosfe.sysmed.controllers.PacienteFacade;
 import com.matoosfe.sysmed.controllers.TipoPacienteFacade;
 import com.matoosfe.sysmed.entities.Paciente;
+import com.matoosfe.sysmed.entities.TipoPaciente;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,9 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
     private List<SelectItem> listaTipoPacientes;
     @Getter
     @Setter
+    private List<TipoPaciente> listaTipoPacientesObj;
+    @Getter
+    @Setter
     private int idTipPac;
     @Getter
     @Setter
@@ -64,6 +68,7 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
         this.paciente = new Paciente();
         this.listaPacientes = new ArrayList<>();
         this.listaTipoPacientes = new ArrayList<>();
+        this.listaTipoPacientesObj = new ArrayList<>();
         this.tipoIden = "CED";
         this.mascaraIden = "9999999999";
         this.pathImagen = "/resources/img/usuario.webp";
@@ -81,8 +86,10 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
      */
     private void cargarTipoPacientes() {
         this.listaTipoPacientes.clear();
+        this.listaTipoPacientesObj.clear();
         adminTipoPaciente.buscarTodos().forEach(tipPac -> {
             this.listaTipoPacientes.add(new SelectItem(tipPac.getIdTippac(), tipPac.getNombreTippac()));
+            this.listaTipoPacientesObj.add(tipPac);
         });
 
 //        for(TipoPaciente tipPac:adminTipoPaciente.buscarTodos()){
@@ -107,8 +114,53 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
         }
     }
 
+    /**
+     * Método para guardar o actualizar un paciente
+     */
     public void guardar() {
+        try {
+            //Recuperar el tipo de paciente y seteandole a paciente
+            TipoPaciente tipoPaciente = adminTipoPaciente.buscarPorId(idTipPac);
+            paciente.setIdTippac(tipoPaciente);
 
+            if (paciente.getIdPac() != null) {
+                adminPaciente.actualizar(paciente);
+                anadirInfo("Paciente actualizado correctamente");
+            } else {
+                adminPaciente.guardar(paciente);
+                anadirInfo("Paciente guardado correctamente");
+            }
+            resetearFormulario();
+        } catch (Exception e) {
+            anadirError("Error al procesar la operación:" + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para guardar o actualizar un paciente
+     */
+    public void guardarConvertidor() {
+        try {
+            if (paciente.getIdPac() != null) {
+                adminPaciente.actualizar(paciente);
+                anadirInfo("Paciente actualizado correctamente");
+            } else {
+                adminPaciente.guardar(paciente);
+                anadirInfo("Paciente guardado correctamente");
+            }
+            resetearFormulario();
+        } catch (Exception e) {
+            anadirError("Error al procesar la operación:" + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para resetear el formulario
+     */
+    public void resetearFormulario() {
+        this.paciente = new Paciente();
+        this.pacienteSel = null;
+        this.idTipPac = 0;
     }
 
     @PostConstruct
