@@ -87,7 +87,7 @@
                 <p:outputLabel for="cmbTipPacCon" value="Tipo de Paciente Conv:"/>
                 <p:selectOneMenu id="cmbTipPacCon" value="#{pacienteBean.paciente.idTippac}" 
                                  required="true"
-                                 converter="#{convTipPac}" converterMessage="Error al convertir tipo de paciente">
+                                 converter="#{convTipPacDos}" converterMessage="Error al convertir tipo de paciente">
                     <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
                     <f:selectItems value="#{pacienteBean.listaTipoPacientesObj}" var="tipPac" itemLabel="#{tipPac.nombreTippac}"
                                    itemValue="#{tipPac}" />
