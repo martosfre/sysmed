@@ -7,75 +7,73 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/WEB-INF/templates/template.xhtml">
     <ui:define name="contenido">
-        <h:form prependId="false">
-            <p:growl id="menGen"/>
-            <p:toolbar>
-                <p:toolbarGroup align="right">
-                    <h:outputLabel value="Administración de Paciente"/>
-                </p:toolbarGroup>
-                <p:toolbarGroup align="left">
-                    <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePac').show();"/>
-                    <p:commandButton icon="far fa-edit" value="Editar" process="@this" 
-                                     actionListener="#{pacienteBean.editar}"
-                                     update=":frmMen:panGriNuePac menGen"/>
-                    <p:commandButton icon="fas fa-trash" value="Eliminar" process="@this"
-                                     onclick="PF('diaConEli').show();"/>
-                </p:toolbarGroup>
-            </p:toolbar>
-            <br></br>
-            <p:panelGrid id="panGriBusPac" columns="3" style="width:100%">
-                <f:facet name="header">
-                    <h:outputLabel value="Buscar Paciente"/>
-                </f:facet>
-                <p:outputLabel for="txtIdeApePac" value="Identificacion/Apellido:"/>
-                <p:inputText id="txtIdeApePac" value="#{pacienteBean.identificacionApellido}"
-                             maxlength="25" required="true"/>
-                <p:commandButton icon="fas fa-search" value="Buscar" process="@this txtIdeApePac" 
-                                 actionListener="#{pacienteBean.buscarPacientes}" update="datTabPac menGen"/>
-            </p:panelGrid>
-            <br></br>
-            <p:dataTable id="datTabPac" value="#{pacienteBean.listaPacientes}" var="pac"
-                         selectionMode="single" rowKey="#{pac.idPac}" paginator="10"
-                         widgetVar="widDatTabPac">
+        <p:growl id="menGen"/>
+        <p:toolbar>
+            <p:toolbarGroup align="right">
+                <h:outputLabel value="Administración de Paciente"/>
+            </p:toolbarGroup>
+            <p:toolbarGroup align="left">
+                <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePac').show();"/>
+                <p:commandButton icon="far fa-edit" value="Editar" process="@this" 
+                                 actionListener="#{pacienteBean.editar}"
+                                 update=":frmMen:panGriNuePac menGen"/>
+                <p:commandButton icon="fas fa-trash" value="Eliminar" process="@this"
+                                 onclick="PF('diaConEli').show();"/>
+            </p:toolbarGroup>
+        </p:toolbar>
+        <br></br>
+        <p:panelGrid id="panGriBusPac" columns="3" style="width:100%">
+            <f:facet name="header">
+                <h:outputLabel value="Buscar Paciente"/>
+            </f:facet>
+            <p:outputLabel for="txtIdeApePac" value="Identificacion/Apellido:"/>
+            <p:inputText id="txtIdeApePac" value="#{pacienteBean.identificacionApellido}"
+                         maxlength="25" required="true"/>
+            <p:commandButton icon="fas fa-search" value="Buscar" process="@this txtIdeApePac" 
+                             actionListener="#{pacienteBean.buscarPacientes}" update="datTabPac menGen"/>
+        </p:panelGrid>
+        <br></br>
+        <p:dataTable id="datTabPac" value="#{pacienteBean.listaPacientes}" var="pac"
+                     selectionMode="single" rowKey="#{pac.idPac}" paginator="10"
+                     widgetVar="widDatTabPac">
 
-                <f:facet name="header">
-                    <div class="flex justify-content-between align-items-center">
-                        <h:outputLabel value="Lista de Pacientes"/>
+            <f:facet name="header">
+                <div class="flex justify-content-between align-items-center">
+                    <h:outputLabel value="Lista de Pacientes"/>
 
-                        <div>
-                            <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
-                            <p:columnToggler datasource="datTabPac" trigger="toggler">
-                                <p:ajax />
-                            </p:columnToggler>
-                        </div>
+                    <div>
+                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                        <p:columnToggler datasource="datTabPac" trigger="toggler">
+                            <p:ajax />
+                        </p:columnToggler>
                     </div>
+                </div>
+            </f:facet>
+
+            <p:ajax event="rowSelect" listener="#{pacienteBean.seleccionarFila}"/>
+
+            <p:column field="idTippac"  headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('widDatTabPac').filter()" styleClass="ui-custom-filter">
+                        <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{pacienteBean.listaTipoPacientesObj}" />
+                    </p:selectOneMenu>
                 </f:facet>
-                
-                <p:ajax event="rowSelect" listener="#{pacienteBean.seleccionarFila}"/>
-                
-                <p:column field="idTippac"  headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
-                    <f:facet name="filter">
-                        <p:selectOneMenu onchange="PF('widDatTabPac').filter()" styleClass="ui-custom-filter">
-                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
-                            <f:selectItems value="#{pacienteBean.listaTipoPacientesObj}" />
-                        </p:selectOneMenu>
-                    </f:facet>
-                    <h:outputLabel value="#{pac.idTippac.nombreTippac}"/>  
-                </p:column>
-                <p:column headerText="Identificación" filterBy="#{pac.identificacionPac}" filterMatchMode="startsWith">
-                    <h:outputLabel value="#{pac.identificacionPac}"/>
-                </p:column>
-                <p:column headerText="Nombre">
-                    <h:outputLabel value="#{pac.nombrePac}"/>
-                </p:column>
-                <p:column headerText="Apellido Paterno" filterBy="#{pac.apellidoPaternoPac}" filterMatchMode="contains">
-                    <h:outputLabel value="#{pac.apellidoPaternoPac}"/>
-                </p:column>
-                <p:column headerText="Apellido Materno">
-                    <h:outputLabel value="#{pac.apellidoMaternoPac}"/>
-                </p:column>
-            </p:dataTable>
-        </h:form>
+                <h:outputLabel value="#{pac.idTippac.nombreTippac}"/>  
+            </p:column>
+            <p:column headerText="Identificación" filterBy="#{pac.identificacionPac}" filterMatchMode="startsWith">
+                <h:outputLabel value="#{pac.identificacionPac}"/>
+            </p:column>
+            <p:column headerText="Nombre">
+                <h:outputLabel value="#{pac.nombrePac}"/>
+            </p:column>
+            <p:column headerText="Apellido Paterno" filterBy="#{pac.apellidoPaternoPac}" filterMatchMode="contains">
+                <h:outputLabel value="#{pac.apellidoPaternoPac}"/>
+            </p:column>
+            <p:column headerText="Apellido Materno">
+                <h:outputLabel value="#{pac.apellidoMaternoPac}"/>
+            </p:column>
+        </p:dataTable>
     </ui:define>
     <ui:define name="mensaje">
         <p:dialog widgetVar="diaNuePac" header="Gestionar Paciente" width="874px" modal="true">
@@ -141,12 +139,12 @@
                                  oncomplete="PF('diaNuePac').hide();"/>
             </p:panelGrid>
         </p:dialog>
-        
-         <p:confirmDialog widgetVar="diaConEli" header="Confirmación Eliminación" 
+
+        <p:confirmDialog widgetVar="diaConEli" header="Confirmación Eliminación" 
                          message="Está seguro de eliminar el registro?">
-             <p:commandButton value="Si" process="@this txtIdeApePac" actionListener="#{pacienteBean.eliminar}"
+            <p:commandButton value="Si" process="@this txtIdeApePac" actionListener="#{pacienteBean.eliminar}"
                              update="datTabPac menGen" oncomplete="PF('diaConEli').hide();"/>
-             <p:commandButton value="No" process="@this" actionListener="#{pacienteBean.resetearFormulario}"
+            <p:commandButton value="No" process="@this" actionListener="#{pacienteBean.resetearFormulario}"
                              update="datTabPac" oncomplete="PF('diaConEli').hide();"/>
         </p:confirmDialog>
     </ui:define>

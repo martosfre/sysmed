@@ -66,3 +66,23 @@ ALTER TABLE public.paciente ADD CONSTRAINT paciente_fk FOREIGN KEY (id_tippac) R
 
 ALTER TABLE public.paciente ADD foto_pac bytea NULL;
 COMMENT ON COLUMN public.paciente.foto_pac IS 'Foto del paciente';
+
+CREATE TABLE public.detalle_historia_clinica (
+	id_dethiscli serial NOT NULL,
+	fecha_atencion_dethiscli date NOT NULL,
+	observaciones_dethiscli varchar(300) NOT NULL,
+	prescripcion_dethiscli varchar(300) NOT NULL,
+	id_his_cli int NOT NULL,
+	CONSTRAINT detalle_historia_clinica_pk PRIMARY KEY (id_dethiscli),
+	CONSTRAINT detalle_historia_clinica_fk FOREIGN KEY (id_his_cli) REFERENCES public.historia_clinica(id_his_cli)
+);
+COMMENT ON TABLE public.detalle_historia_clinica IS 'Tabla para almacenar los detalles de la historia clínica, atenciones';
+
+-- Column comments
+
+COMMENT ON COLUMN public.detalle_historia_clinica.id_dethiscli IS 'Identificador de detalle de historia clínica';
+COMMENT ON COLUMN public.detalle_historia_clinica.fecha_atencion_dethiscli IS 'Fecha de Atención';
+COMMENT ON COLUMN public.detalle_historia_clinica.observaciones_dethiscli IS 'Observaciones atención';
+COMMENT ON COLUMN public.detalle_historia_clinica.prescripcion_dethiscli IS 'Prescripción medica';
+COMMENT ON COLUMN public.detalle_historia_clinica.id_his_cli IS 'Identificador de historia clínica';
+

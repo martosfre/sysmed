@@ -34,9 +34,11 @@
             </pe:layoutPane>
             <pe:layoutPane position="center">
                 <!-- Sección a reemplazar -->
-                <ui:insert name="contenido">
-                    <p:outputLabel value="Bienvenidos"/>
-                </ui:insert>
+                <h:form prependId="false">
+                    <ui:insert name="contenido">
+                        <p:outputLabel value="Bienvenidos"/>
+                    </ui:insert>
+                </h:form>
             </pe:layoutPane>
         </pe:layout>
         <h:form id="frmMen">

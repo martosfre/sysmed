@@ -106,7 +106,6 @@ public class Paciente implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPac")
     private List<HistoriaClinica> historiaClinicaList;
 
-
     public Paciente(Integer idPac) {
         this.idPac = idPac;
     }
@@ -122,7 +121,6 @@ public class Paciente implements Serializable {
         this.fechaNacimientoPac = fechaNacimientoPac;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -145,7 +143,7 @@ public class Paciente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.matoosfe.sysmed.entities.Paciente[ idPac=" + idPac + " ]";
+        return this.nombrePac + " " + this.apellidoPaternoPac + " " + this.apellidoMaternoPac;
     }
-    
+
 }

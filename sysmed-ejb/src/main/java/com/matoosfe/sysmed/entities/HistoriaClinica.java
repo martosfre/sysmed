@@ -6,6 +6,7 @@ package com.matoosfe.sysmed.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -61,6 +63,8 @@ public class HistoriaClinica implements Serializable {
     @JoinColumn(name = "id_pac", referencedColumnName = "id_pac")
     @ManyToOne(optional = false)
     private Paciente idPac;
+    @OneToMany(mappedBy = "historiaClinica")
+    private List<DetalleHistoriaClinica> detallesHistoria;
 
 
     public HistoriaClinica(Integer idHisCli) {
