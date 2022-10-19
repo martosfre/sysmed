@@ -15,7 +15,9 @@
                 </p:toolbarGroup>
                 <p:toolbarGroup align="left">
                     <p:commandButton icon="pi pi-file" value="Nuevo" onclick="PF('diaNuePac').show();"/>
-                    <p:commandButton icon="far fa-edit" value="Editar"/>
+                    <p:commandButton icon="far fa-edit" value="Editar" process="@this" 
+                                     actionListener="#{pacienteBean.editar}"
+                                     update=":frmMen:panGriNuePac menGen"/>
                     <p:commandButton icon="fas fa-trash" value="Eliminar"/>
                 </p:toolbarGroup>
             </p:toolbar>
@@ -47,6 +49,8 @@
                         </div>
                     </div>
                 </f:facet>
+                
+                <p:ajax event="rowSelect" listener="#{pacienteBean.seleccionarFila}"/>
                 
                 <p:column field="idTippac"  headerText="Tipo de Paciente" filterBy="#{pac.idTippac.nombreTippac}" filterMatchMode="exact">
                     <f:facet name="filter">

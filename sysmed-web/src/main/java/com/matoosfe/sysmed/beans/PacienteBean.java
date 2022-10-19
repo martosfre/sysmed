@@ -19,6 +19,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -27,7 +29,7 @@ import lombok.Setter;
 @Named
 @ViewScoped
 public class PacienteBean extends AbstractManagedBean implements Serializable {
-    
+
     @Getter
     @Setter
     private Paciente paciente;
@@ -58,12 +60,12 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
     @Getter
     @Setter
     private String pathImagen;
-    
+
     @Inject
     private PacienteFacade adminPaciente;
     @Inject
     private TipoPacienteFacade adminTipoPaciente;
-    
+
     public PacienteBean() {
         this.paciente = new Paciente();
         this.listaPacientes = new ArrayList<>();
@@ -80,7 +82,7 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
     public void buscarPacientes() {
         try {
             this.listaPacientes = adminPaciente.buscarIdentificacionApellido(identificacionApellido);
-            if(listaPacientes.isEmpty()){
+            if (listaPacientes.isEmpty()) {
                 anadirInfo("No existen pacientes con ese criterio");
             }
         } catch (Exception e) {
@@ -129,7 +131,7 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
             //Recuperar el tipo de paciente y seteandole a paciente
             TipoPaciente tipoPaciente = adminTipoPaciente.buscarPorId(idTipPac);
             paciente.setIdTippac(tipoPaciente);
-            
+
             if (paciente.getIdPac() != null) {
                 adminPaciente.actualizar(paciente);
                 anadirInfo("Paciente actualizado correctamente");
@@ -160,6 +162,41 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
             anadirError("Error al procesar la operación:" + e.getMessage());
         }
     }
+    
+
+    /**
+     * Método para seleccionar un paciente
+     * @param ev 
+     */
+    public void seleccionarFila(SelectEvent<Paciente> ev) {
+        this.pacienteSel = ev.getObject();
+    }
+    
+    /**
+     * Método para cargar un paciente
+     */
+    public void editar(){
+        if(pacienteSel != null){
+            this.paciente = pacienteSel;
+            this.idTipPac = paciente.getIdTippac().getIdTippac(); //cuando no se utiliza convertidor
+            //Validar la máscara
+            switch (paciente.getIdentificacionPac().length()) {
+                case 10:
+                    this.tipoIden = "CED";
+                    break;
+                case 13:
+                    this.tipoIden ="RUC"; 
+                    break;
+                default:
+                    this.tipoIden = "PAS";
+                    break;
+            }
+            actualizarMascaraIdentificacion();
+            PrimeFaces.current().executeScript("PF('diaNuePac').show();");
+        }else{
+            anadirError("Se debe seleccionar un paciente");
+        }
+    }
 
     /**
      * Método para resetear el formulario
@@ -169,10 +206,10 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
         this.pacienteSel = null;
         this.idTipPac = 0;
     }
-    
+
     @PostConstruct
     public void inicializar() {
         cargarTipoPacientes();
     }
-    
+
 }
