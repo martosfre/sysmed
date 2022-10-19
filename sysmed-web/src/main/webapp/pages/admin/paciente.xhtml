@@ -18,7 +18,8 @@
                     <p:commandButton icon="far fa-edit" value="Editar" process="@this" 
                                      actionListener="#{pacienteBean.editar}"
                                      update=":frmMen:panGriNuePac menGen"/>
-                    <p:commandButton icon="fas fa-trash" value="Eliminar"/>
+                    <p:commandButton icon="fas fa-trash" value="Eliminar" process="@this"
+                                     onclick="PF('diaConEli').show();"/>
                 </p:toolbarGroup>
             </p:toolbar>
             <br></br>
@@ -140,6 +141,14 @@
                                  oncomplete="PF('diaNuePac').hide();"/>
             </p:panelGrid>
         </p:dialog>
+        
+         <p:confirmDialog widgetVar="diaConEli" header="Confirmación Eliminación" 
+                         message="Está seguro de eliminar el registro?">
+             <p:commandButton value="Si" process="@this txtIdeApePac" actionListener="#{pacienteBean.eliminar}"
+                             update="datTabPac menGen" oncomplete="PF('diaConEli').hide();"/>
+             <p:commandButton value="No" process="@this" actionListener="#{pacienteBean.resetearFormulario}"
+                             update="datTabPac" oncomplete="PF('diaConEli').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 
 </ui:composition>

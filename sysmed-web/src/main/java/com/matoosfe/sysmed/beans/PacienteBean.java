@@ -197,6 +197,20 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
             anadirError("Se debe seleccionar un paciente");
         }
     }
+    
+    /**
+     * Método para eliminar un paciente
+     */
+    public void eliminar(){
+        if(pacienteSel != null){
+            adminPaciente.eliminar(pacienteSel);
+            anadirInfo("Paciente eliminado correctamente");
+            buscarPacientes();
+            resetearFormulario();
+        }else{
+             anadirError("Se debe seleccionar un paciente");
+        }
+    }
 
     /**
      * Método para resetear el formulario
@@ -205,6 +219,7 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
         this.paciente = new Paciente();
         this.pacienteSel = null;
         this.idTipPac = 0;
+        this.identificacionApellido = null;
     }
 
     @PostConstruct
