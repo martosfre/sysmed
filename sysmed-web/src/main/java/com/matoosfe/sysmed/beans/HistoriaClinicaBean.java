@@ -43,6 +43,9 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
     @Getter
     @Setter
     private List<DetalleHistoriaClinica> detallesHistoriaClinica;
+    @Getter
+    @Setter
+    private String numeroHistoria;
 
     @Getter
     @Setter
@@ -109,6 +112,20 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
         } catch (Exception e) {
             anadirError("Error al guardar historia clínica:" + e.getMessage());
         }
+    }
+    
+    /**
+     * Método para buscar las historia clínicas por su número
+     */
+    public void buscar(){
+        this.historiasClinicas = adminHistoriaCli.buscarPorNumero(numeroHistoria);
+        if(historiasClinicas.isEmpty()){
+            anadirInfo("No existen historias clínicas con ese criterio");
+        }
+    }
+    
+    public int obtenerAtenciones(HistoriaClinica his){
+        return his.getDetallesHistoria().size();
     }
     
     /**

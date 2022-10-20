@@ -16,19 +16,22 @@
                 <p:toolbarGroup align="right">
                     <p:commandButton value="Nuevo" process="@this" actionListener="#{hisCliBean.activarPanel}" 
                                      update="outPanLisHisCli outPanGuaHisCli" icon="pi pi-file"/>
-                    <p:commandButton value="Buscar" icon="fas fa-search"/>
+                    <p:commandButton value="Buscar" icon="fas fa-search" process="@this txtNumHisCliBus"
+                                     actionListener="#{hisCliBean.buscar}"
+                                     update="datTabHisCli"/>
                 </p:toolbarGroup>
             </p:toolbar>
             <br></br>
             <p:panelGrid id="panGriBusHisCli" columns="2" style="width: 100%" 
                          rendered="#{!hisCliBean.panelNuevo}" >
                 <p:outputLabel for="txtNumHisCliBus" value="Número Historia:"/>
-                <p:inputText id="txtNumHisCliBus" maxlength="6" required="true"/>
+                <p:inputText id="txtNumHisCliBus" value="#{hisCliBean.numeroHistoria}"
+                             maxlength="6" required="true"/>
             </p:panelGrid>
             <br></br>
             <p:dataTable id="datTabHisCli" value="#{hisCliBean.historiasClinicas}" 
                          var="his" selectionMode="single" paginator="true" rows="20" 
-                         rendered="#{!hisCliBean.panelNuevo}">
+                         rowKey="#{his.idHisCli}" rendered="#{!hisCliBean.panelNuevo}">
                 <f:facet name="header">
                     <h:outputLabel value="Lista de Historias Clínicas"/>
                 </f:facet>
@@ -39,10 +42,15 @@
                     <h:outputLabel value="#{his.idPac}"/>
                 </p:column>
                 <p:column headerText="Fecha Admisión">
-                    <h:outputLabel value="#{his.fechaAperturaHiscli}"/>
+                    <h:outputLabel value="#{his.fechaAperturaHiscli}">
+                        <f:convertDateTime pattern="yyyy-MM-dd"/>
+                    </h:outputLabel>
                 </p:column>
                 <p:column headerText="Número de Atenciones">
-                    <h:outputLabel value="#{his.detallesHistoria.size}"/>
+                    <h:outputLabel value="#{hisCliBean.obtenerAtenciones(his)}"/>
+                </p:column>
+                <p:column headerText="Operación">
+                    <p:commandButton value="Generar Atención"/>
                 </p:column>
             </p:dataTable>
         </p:outputPanel>

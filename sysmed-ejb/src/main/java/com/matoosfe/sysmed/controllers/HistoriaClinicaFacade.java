@@ -5,9 +5,11 @@
 package com.matoosfe.sysmed.controllers;
 
 import com.matoosfe.sysmed.entities.HistoriaClinica;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -26,6 +28,19 @@ public class HistoriaClinicaFacade extends AbstractFacade<HistoriaClinica>{
 
     public HistoriaClinicaFacade() {
         super(HistoriaClinica.class);
+    }
+
+    /**
+     * Método para buscar las historias clínicas por su número.
+     * Se utilizará JPQL (Sql de objetos)
+     * @param numeroHistoria
+     * @return 
+     */
+    public List<HistoriaClinica> buscarPorNumero(String numeroHistoria) {
+        TypedQuery<HistoriaClinica> conHisNum = em.createQuery("Select his from HistoriaClinica his "
+                + " where his.numeroHistoriaClinica like :numero", HistoriaClinica.class);
+        conHisNum.setParameter("numero", numeroHistoria + "%");
+        return conHisNum.getResultList();
     }
    
     
