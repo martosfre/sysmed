@@ -30,8 +30,8 @@
             </p:panelGrid>
             <br></br>
             <p:dataTable id="datTabHisCli" value="#{hisCliBean.historiasClinicas}" 
-                         var="his" selectionMode="single" paginator="true" rows="20" 
-                         rowKey="#{his.idHisCli}" rendered="#{!hisCliBean.panelNuevo}">
+                         var="his"  paginator="true" rows="20" 
+                         rendered="#{!hisCliBean.panelNuevo}">
                 <f:facet name="header">
                     <h:outputLabel value="Lista de Historias Clínicas"/>
                 </f:facet>
@@ -50,7 +50,9 @@
                     <h:outputLabel value="#{hisCliBean.obtenerAtenciones(his)}"/>
                 </p:column>
                 <p:column headerText="Operación">
-                    <p:commandButton value="Generar Atención"/>
+                    <p:commandButton value="Generar Atención" process="@this"
+                                     actionListener="#{hisCliBean.cargarHistoriaClinica(his)}"
+                                     update="outPanLisHisCli outPanGuaHisCli"/>
                 </p:column>
             </p:dataTable>
         </p:outputPanel>
@@ -74,17 +76,19 @@
                          rendered="#{hisCliBean.panelNuevo}">
                 <p:outputLabel for="txtNumHisCli" value="Número:"/>
                 <p:inputText id="txtNumHisCli" value="#{hisCliBean.historiaClinica.numeroHistoriaClinica}" 
-                             required="true"/>
+                             required="true" disabled="#{hisCliBean.bloquearHistoria}"/>
                 <p:outputLabel for="atxtPac" value="Paciente:"/>
                 <p:autoComplete id="atxtPac" value="#{hisCliBean.historiaClinica.idPac}"
                                 completeMethod="#{hisCliBean.completarPacientes}"
                                 var="pac" itemLabel="#{pac}" itemValue="#{pac}"
-                                converter="#{convPaciente}" forceSelection="true" scrollHeight="250"/>
+                                converter="#{convPaciente}" forceSelection="true" scrollHeight="250"
+                                disabled="#{hisCliBean.bloquearHistoria}"/>
                 <p:outputLabel for="calFecAdmHisCli" value="Fecha Admisión:"/>
                 <p:calendar id="calFecAdmHisCli" value="#{hisCliBean.historiaClinica.fechaAperturaHiscli}"
-                            pattern="yyyy-MM-dd" required="true"/>
+                            pattern="yyyy-MM-dd" required="true"
+                            disabled="#{hisCliBean.bloquearHistoria}"/>
                 <p:outputLabel for="cmbDisMed" value="Dispensario:"/>
-                <p:selectOneMenu id="cmbDisMed">
+                <p:selectOneMenu id="cmbDisMed" disabled="#{hisCliBean.bloquearHistoria}">
                     <f:selectItem itemLabel="HCAM" itemValue="1"/>
                     <f:selectItem itemLabel="HSUR" itemValue="2"/>
                     <f:selectItem itemLabel="HARM" itemValue="3"/>
@@ -97,7 +101,9 @@
                                  var="detHis" selectionMode="single" 
                                  rowKey="#{detHis.idDethiscli}">
                         <p:column headerText="Fecha Atención">
-                            <h:outputLabel value="#{detHis.fechaAtencionDethiscli}"/>
+                            <h:outputLabel value="#{detHis.fechaAtencionDethiscli}">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                            </h:outputLabel>
                         </p:column>
                         <p:column headerText="Observaciones">
                             <h:outputLabel value="#{detHis.observacionesDethiscli}"/>

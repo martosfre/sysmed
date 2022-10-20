@@ -46,6 +46,9 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
     @Getter
     @Setter
     private String numeroHistoria;
+    @Getter
+    @Setter
+    private boolean bloquearHistoria;
 
     @Getter
     @Setter
@@ -113,34 +116,49 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
             anadirError("Error al guardar historia clínica:" + e.getMessage());
         }
     }
-    
+
     /**
      * Método para buscar las historia clínicas por su número
      */
-    public void buscar(){
+    public void buscar() {
         this.historiasClinicas = adminHistoriaCli.buscarPorNumero(numeroHistoria);
-        if(historiasClinicas.isEmpty()){
+        if (historiasClinicas.isEmpty()) {
             anadirInfo("No existen historias clínicas con ese criterio");
         }
     }
-    
-    public int obtenerAtenciones(HistoriaClinica his){
+
+    /**
+     * Método para obtener el número de atenciones de la historia clínica
+     *
+     * @param his
+     * @return
+     */
+    public int obtenerAtenciones(HistoriaClinica his) {
         return his.getDetallesHistoria().size();
     }
-    
+
     /**
      * Método para cargar las atenciones
+     *
+     * @param his
      */
-    private void cargarAtenciones(){
-        
+    public void cargarHistoriaClinica(HistoriaClinica his) {
+        this.historiaClinica = his;
+        this.detallesHistoriaClinica = his.getDetallesHistoria();
+        activarPanel();
+        this.bloquearHistoria = true;
     }
-    
+
     /**
      * Método para limpiar el formulario
      */
-    public void resetearFormulario(){
+    public void resetearFormulario() {
         this.historiaClinica = new HistoriaClinica();
         this.detHisClinica = new DetalleHistoriaClinica();
+        this.bloquearHistoria = false;
+        this.numeroHistoria = null;
+        this.detallesHistoriaClinica.clear();
+        this.historiasClinicas.clear();
         desactivarPanel();
     }
 
