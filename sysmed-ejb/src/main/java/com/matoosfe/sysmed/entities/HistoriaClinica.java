@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -63,7 +64,7 @@ public class HistoriaClinica implements Serializable {
     @JoinColumn(name = "id_pac", referencedColumnName = "id_pac")
     @ManyToOne(optional = false)
     private Paciente idPac;
-    @OneToMany(mappedBy = "historiaClinica")
+    @OneToMany(mappedBy = "historiaClinica", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<DetalleHistoriaClinica> detallesHistoria;
 
 

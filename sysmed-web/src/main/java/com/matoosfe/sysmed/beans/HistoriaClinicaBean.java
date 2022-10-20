@@ -5,7 +5,9 @@
 package com.matoosfe.sysmed.beans;
 
 import com.matoosfe.sysmed.beans.util.AbstractManagedBean;
+import com.matoosfe.sysmed.controllers.HistoriaClinicaFacade;
 import com.matoosfe.sysmed.controllers.PacienteFacade;
+import com.matoosfe.sysmed.entities.DetalleHistoriaClinica;
 import com.matoosfe.sysmed.entities.HistoriaClinica;
 import com.matoosfe.sysmed.entities.Paciente;
 import java.io.Serializable;
@@ -22,7 +24,7 @@ import lombok.Setter;
  *
  * @author martosfre
  */
-@Named
+@Named("hisCliBean")
 @ViewScoped
 public class HistoriaClinicaBean extends AbstractManagedBean implements Serializable {
 
@@ -37,14 +39,25 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
     private List<HistoriaClinica> historiasClinicas;
     @Getter
     @Setter
+    private DetalleHistoriaClinica detHisClinica;
+    @Getter
+    @Setter
+    private List<DetalleHistoriaClinica> detallesHistoriaClinica;
+
+    @Getter
+    @Setter
     private boolean panelNuevo;
 
     @Inject
     private PacienteFacade adminPaciente;
+    @Inject
+    private HistoriaClinicaFacade adminHistoriaCli;
 
     public HistoriaClinicaBean() {
         this.historiaClinica = new HistoriaClinica();
         this.historiasClinicas = new ArrayList<>();
+        this.detHisClinica = new DetalleHistoriaClinica();
+        this.detallesHistoriaClinica = new ArrayList<>();
     }
 
     /**
@@ -59,18 +72,59 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
         return pacientes.stream().filter(pac -> pac.getApellidoPaternoPac().toLowerCase()
                 .contains(queryLowerCase)).collect(Collectors.toList());
     }
-    
+
     /**
      * Método para activar el panel de nuevo
      */
-    public void activarPanel(){
+    public void activarPanel() {
         this.panelNuevo = true;
     }
+
     /**
      * Método para desactivar el panel de nuevo
      */
-     public void desactivarPanel(){
+    public void desactivarPanel() {
         this.panelNuevo = false;
+    }
+
+    /**
+     * Método para guardar o actualizar la historia con su atención
+     */
+    public void guardar() {
+        try {
+            detHisClinica.setHistoriaClinica(historiaClinica); //Padre
+            if (historiaClinica.getIdHisCli() != null) {
+                historiaClinica.getDetallesHistoria().add(detHisClinica);//Hijos
+                adminHistoriaCli.actualizar(historiaClinica);
+                anadirInfo("Historia clinica actualizada correctamente");
+            } else {
+                List<DetalleHistoriaClinica> detalles = new ArrayList<>();
+                detalles.add(detHisClinica);
+                historiaClinica.setDetallesHistoria(detalles);
+                adminHistoriaCli.guardar(historiaClinica);
+                anadirInfo("Historia clinica registrada correctamente");
+            }
+            resetearFormulario();
+
+        } catch (Exception e) {
+            anadirError("Error al guardar historia clínica:" + e.getMessage());
+        }
+    }
+    
+    /**
+     * Método para cargar las atenciones
+     */
+    private void cargarAtenciones(){
+        
+    }
+    
+    /**
+     * Método para limpiar el formulario
+     */
+    public void resetearFormulario(){
+        this.historiaClinica = new HistoriaClinica();
+        this.detHisClinica = new DetalleHistoriaClinica();
+        desactivarPanel();
     }
 
 }

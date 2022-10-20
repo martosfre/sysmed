@@ -7,27 +7,28 @@
                 xmlns:p="http://primefaces.org/ui" 
                 template="/WEB-INF/templates/template.xhtml">
     <ui:define name="contenido">
+        <p:growl id="menGen"/>
         <p:outputPanel id="outPanLisHisCli">
-            <p:toolbar rendered="#{!historiaClinicaBean.panelNuevo}">
+            <p:toolbar rendered="#{!hisCliBean.panelNuevo}">
                 <p:toolbarGroup align="left">
                     <h:outputLabel value="Administrar Historias Clínicas"/>
                 </p:toolbarGroup>
                 <p:toolbarGroup align="right">
-                    <p:commandButton value="Nuevo" process="@this" actionListener="#{historiaClinicaBean.activarPanel}" 
+                    <p:commandButton value="Nuevo" process="@this" actionListener="#{hisCliBean.activarPanel}" 
                                      update="outPanLisHisCli outPanGuaHisCli" icon="pi pi-file"/>
                     <p:commandButton value="Buscar" icon="fas fa-search"/>
                 </p:toolbarGroup>
             </p:toolbar>
             <br></br>
             <p:panelGrid id="panGriBusHisCli" columns="2" style="width: 100%" 
-                         rendered="#{!historiaClinicaBean.panelNuevo}" >
+                         rendered="#{!hisCliBean.panelNuevo}" >
                 <p:outputLabel for="txtNumHisCliBus" value="Número Historia:"/>
                 <p:inputText id="txtNumHisCliBus" maxlength="6" required="true"/>
             </p:panelGrid>
             <br></br>
-            <p:dataTable id="datTabHisCli" value="#{historiaClinicaBean.historiasClinicas}" 
+            <p:dataTable id="datTabHisCli" value="#{hisCliBean.historiasClinicas}" 
                          var="his" selectionMode="single" paginator="true" rows="20" 
-                         rendered="#{!historiaClinicaBean.panelNuevo}">
+                         rendered="#{!hisCliBean.panelNuevo}">
                 <f:facet name="header">
                     <h:outputLabel value="Lista de Historias Clínicas"/>
                 </f:facet>
@@ -46,30 +47,33 @@
             </p:dataTable>
         </p:outputPanel>
         <p:outputPanel id="outPanGuaHisCli">
-            <p:toolbar rendered="#{historiaClinicaBean.panelNuevo}">
+            <p:toolbar rendered="#{hisCliBean.panelNuevo}">
                 <p:toolbarGroup align="left">
                     <h:outputLabel value="Administrar Historias Clínicas"/>
                 </p:toolbarGroup>
                 <p:toolbarGroup align="right">
-                    <p:commandButton value="Guardar" icon="fas fa-save"/>
-                    <p:commandButton value="Regresar" icon="fas fa-chevron-double-left"
-                                     process="@this" actionListener="#{historiaClinicaBean.desactivarPanel}"
+                    <p:commandButton value="Guardar" icon="fas fa-save"
+                                     process="@this panGriNueHisCli tabVieGen:panGriDetHis"
+                                     actionListener="#{hisCliBean.guardar}"
+                                     update="outPanLisHisCli outPanGuaHisCli menGen"/>
+                    <p:commandButton value="Regresar" icon="fas fa-chevron-left"
+                                     process="@this" actionListener="#{hisCliBean.desactivarPanel}"
                                      update="outPanLisHisCli outPanGuaHisCli"/>
                 </p:toolbarGroup>
             </p:toolbar>
             <br></br>
             <p:panelGrid id="panGriNueHisCli" columns="4" style="width: 100%" 
-                         rendered="#{historiaClinicaBean.panelNuevo}">
+                         rendered="#{hisCliBean.panelNuevo}">
                 <p:outputLabel for="txtNumHisCli" value="Número:"/>
-                <p:inputText id="txtNumHisCli" value="#{historiaClinicaBean.historiaClinica.numeroHistoriaClinica}" 
+                <p:inputText id="txtNumHisCli" value="#{hisCliBean.historiaClinica.numeroHistoriaClinica}" 
                              required="true"/>
                 <p:outputLabel for="atxtPac" value="Paciente:"/>
-                <p:autoComplete id="atxtPac" value="#{historiaClinicaBean.historiaClinica.idPac}"
-                                completeMethod="#{historiaClinicaBean.completarPacientes}"
+                <p:autoComplete id="atxtPac" value="#{hisCliBean.historiaClinica.idPac}"
+                                completeMethod="#{hisCliBean.completarPacientes}"
                                 var="pac" itemLabel="#{pac}" itemValue="#{pac}"
                                 converter="#{convPaciente}" forceSelection="true" scrollHeight="250"/>
                 <p:outputLabel for="calFecAdmHisCli" value="Fecha Admisión:"/>
-                <p:calendar id="calFecAdmHisCli" value="#{historiaClinicaBean.historiaClinica.fechaAperturaHiscli}"
+                <p:calendar id="calFecAdmHisCli" value="#{hisCliBean.historiaClinica.fechaAperturaHiscli}"
                             pattern="yyyy-MM-dd" required="true"/>
                 <p:outputLabel for="cmbDisMed" value="Dispensario:"/>
                 <p:selectOneMenu id="cmbDisMed">
@@ -78,6 +82,47 @@
                     <f:selectItem itemLabel="HARM" itemValue="3"/>
                 </p:selectOneMenu>
             </p:panelGrid>
+            <br></br>
+            <p:tabView id="tabVieGen" rendered="#{hisCliBean.panelNuevo}">
+                <p:tab title="Listar Atenciones">
+                    <p:dataTable id="datTabAte" value="#{hisCliBean.detallesHistoriaClinica}"
+                                 var="detHis" selectionMode="single" 
+                                 rowKey="#{detHis.idDethiscli}">
+                        <p:column headerText="Fecha Atención">
+                            <h:outputLabel value="#{detHis.fechaAtencionDethiscli}"/>
+                        </p:column>
+                        <p:column headerText="Observaciones">
+                            <h:outputLabel value="#{detHis.observacionesDethiscli}"/>
+                        </p:column>
+                        <p:column headerText="Prescripción">
+                            <h:outputLabel value="#{detHis.prescripcionDethiscli}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Ingresar Atención">
+                    <p:panelGrid id="panGriDetHis" columns="4" style="width: 100%" 
+                                 rendered="#{hisCliBean.panelNuevo}">
+                        <p:outputLabel for="calFecAteDetHis" value="Fecha Atención:"/>
+                        <p:calendar id="calFecAteDetHis" 
+                                    value="#{hisCliBean.detHisClinica.fechaAtencionDethiscli}"
+                                    pattern="yyyy-MM-dd" required="true"/>
+                        <p:outputLabel for="cmbEspDetHis" value="Especialidad:"/>
+                        <p:selectOneMenu id="cmbEspDetHis">
+                            <f:selectItem itemLabel="Cardiología" itemValue="1"/>
+                            <f:selectItem itemLabel="Neuorología" itemValue="2"/>
+                            <f:selectItem itemLabel="Gastroenterología" itemValue="3"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel for="txaObsDetHis" value="Observaciones:"/>
+                        <p:inputTextarea id="txaObsDetHis" 
+                                         value="#{hisCliBean.detHisClinica.observacionesDethiscli}"
+                                         cols="20" rows="6" required="true"/>
+                        <p:outputLabel for="txaPresDetHis" value="Prescripción:"/>
+                        <p:inputTextarea id="txaPresDetHis" 
+                                         value="#{hisCliBean.detHisClinica.prescripcionDethiscli}"
+                                         cols="20" rows="6" required="true"/>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
         </p:outputPanel>
     </ui:define>
 </ui:composition>
