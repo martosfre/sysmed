@@ -5,15 +5,18 @@
 package com.matoosfe.sysmed.beans;
 
 import com.matoosfe.sysmed.beans.util.AbstractManagedBean;
+import com.matoosfe.sysmed.controllers.EspecialidadFacade;
 import com.matoosfe.sysmed.controllers.HistoriaClinicaFacade;
 import com.matoosfe.sysmed.controllers.PacienteFacade;
 import com.matoosfe.sysmed.entities.DetalleHistoriaClinica;
+import com.matoosfe.sysmed.entities.Especialidad;
 import com.matoosfe.sysmed.entities.HistoriaClinica;
 import com.matoosfe.sysmed.entities.Paciente;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,21 +52,26 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
     @Getter
     @Setter
     private boolean bloquearHistoria;
-
     @Getter
     @Setter
     private boolean panelNuevo;
+    @Getter
+    @Setter
+    private List<Especialidad> especialidades;
 
     @Inject
     private PacienteFacade adminPaciente;
     @Inject
     private HistoriaClinicaFacade adminHistoriaCli;
+    @Inject
+    private EspecialidadFacade adminEspecialidad;
 
     public HistoriaClinicaBean() {
         this.historiaClinica = new HistoriaClinica();
         this.historiasClinicas = new ArrayList<>();
         this.detHisClinica = new DetalleHistoriaClinica();
         this.detallesHistoriaClinica = new ArrayList<>();
+        this.especialidades = new ArrayList<>();
     }
 
     /**
@@ -150,6 +158,14 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
     }
 
     /**
+     * Método para cargar las especialidades
+     */
+    private void cargarEspecialidades() {
+//        this.especialidades = adminEspecialidad.buscarTodos();
+        this.especialidades = adminEspecialidad.cargarEspecialidadesSP();
+    }
+
+    /**
      * Método para limpiar el formulario
      */
     public void resetearFormulario() {
@@ -160,6 +176,11 @@ public class HistoriaClinicaBean extends AbstractManagedBean implements Serializ
         this.detallesHistoriaClinica.clear();
         this.historiasClinicas.clear();
         desactivarPanel();
+    }
+
+    @PostConstruct
+    public void inicializar() {
+        cargarEspecialidades();
     }
 
 }

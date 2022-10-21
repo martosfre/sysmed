@@ -86,3 +86,34 @@ COMMENT ON COLUMN public.detalle_historia_clinica.observaciones_dethiscli IS 'Ob
 COMMENT ON COLUMN public.detalle_historia_clinica.prescripcion_dethiscli IS 'Prescripción medica';
 COMMENT ON COLUMN public.detalle_historia_clinica.id_his_cli IS 'Identificador de historia clínica';
 
+
+CREATE TABLE public.especialidad (
+	id_esp serial NOT NULL,
+	nombre_esp varchar(100) NOT NULL,
+	descripcion_esp varchar(300) NOT NULL,
+	CONSTRAINT pk_especialidad PRIMARY KEY (id_esp)
+);
+COMMENT ON TABLE public.especialidad IS 'Tabla para almacenar las especialidades';
+
+-- Column comments
+
+COMMENT ON COLUMN public.especialidad.id_esp IS 'Tabla para almacenar las especialidades';
+COMMENT ON COLUMN public.especialidad.nombre_esp IS 'Nombre de la especialidad';
+COMMENT ON COLUMN public.especialidad.descripcion_esp IS 'Descripción especialidad';
+
+ALTER TABLE public.detalle_historia_clinica ADD id_esp int NOT NULL;
+COMMENT ON COLUMN public.detalle_historia_clinica.id_esp IS 'Identificador de especialidad';
+
+ALTER TABLE public.detalle_historia_clinica ADD CONSTRAINT especialidad_detalle_historia_clinica_fk FOREIGN KEY (id_esp) REFERENCES public.especialidad(id_esp);
+
+
+CREATE OR REPLACE FUNCTION obtener_especialidades() RETURNS refcursor as $$
+    DECLARE
+      cur_especialidades refcursor;                                  
+    BEGIN
+      OPEN cur_especialidades FOR SELECT * FROM public.especialidad;
+      RETURN cur_especialidades;
+    END;
+  $$
+  LANGUAGE plpgsql;
+

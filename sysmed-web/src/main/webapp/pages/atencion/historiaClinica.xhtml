@@ -121,10 +121,11 @@
                                     value="#{hisCliBean.detHisClinica.fechaAtencionDethiscli}"
                                     pattern="yyyy-MM-dd" required="true"/>
                         <p:outputLabel for="cmbEspDetHis" value="Especialidad:"/>
-                        <p:selectOneMenu id="cmbEspDetHis">
-                            <f:selectItem itemLabel="Cardiología" itemValue="1"/>
-                            <f:selectItem itemLabel="Neuorología" itemValue="2"/>
-                            <f:selectItem itemLabel="Gastroenterología" itemValue="3"/>
+                        <p:selectOneMenu id="cmbEspDetHis" value="#{hisCliBean.detHisClinica.especialidad}"
+                                         converter="#{convEspecialidad}" required="true">
+                            <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{hisCliBean.especialidades}" var="esp"
+                                           itemLabel="#{esp.nombreEsp}" itemValue="#{esp}"/>
                         </p:selectOneMenu>
                         <p:outputLabel for="txaObsDetHis" value="Observaciones:"/>
                         <p:inputTextarea id="txaObsDetHis" 

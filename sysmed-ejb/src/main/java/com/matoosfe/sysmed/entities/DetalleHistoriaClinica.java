@@ -63,11 +63,13 @@ public class DetalleHistoriaClinica implements Serializable {
     @Size(min = 1, max = 300)
     @Column(name = "prescripcion_dethiscli")
     private String prescripcionDethiscli;
-    
+
     @ManyToOne
     @JoinColumn(name = "id_his_cli", referencedColumnName = "id_his_cli")
     private HistoriaClinica historiaClinica;
-
+    @ManyToOne
+    @JoinColumn(name = "id_esp", referencedColumnName = "id_esp")
+    private Especialidad especialidad;
 
     @Override
     public int hashCode() {
@@ -93,5 +95,5 @@ public class DetalleHistoriaClinica implements Serializable {
     public String toString() {
         return "com.matoosfe.sysmed.entities.DetalleHistoriaClinica[ idDethiscli=" + idDethiscli + " ]";
     }
-    
+
 }
