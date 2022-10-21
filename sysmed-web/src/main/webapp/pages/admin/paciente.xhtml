@@ -128,7 +128,12 @@
                 <p:calendar id="calFecNacPac" value="#{pacienteBean.paciente.fechaNacimientoPac}" 
                             required="true" pattern="yyyy-MM-dd"/>
                 <p:outputLabel for="graFotPac" value="Foto:"/>
-                <p:graphicImage id="graFotPac" value="#{pacienteBean.pathImagen}" width="100"/>
+                <p:graphicImage id="graFotPac" 
+                                value="#{pacienteBean.imagenBinaria ne null ? pacienteBean.imagenBinaria: pacienteBean.pathImagen}" 
+                                width="100" cache="false">
+                    <p:ajax event="click" process="@this" update=":frmMen:filUplIma" oncomplete="PF('diaCarIma').show();"/>
+                </p:graphicImage>
+
             </p:panelGrid>
             <p:panelGrid columns="2" style="width: 100%">
                 <p:commandButton icon="far fa-save" value="Guardar"  process="@this :frmMen:panGriNuePac"
@@ -147,6 +152,12 @@
             <p:commandButton value="No" process="@this" actionListener="#{pacienteBean.resetearFormulario}"
                              update="datTabPac" oncomplete="PF('diaConEli').hide();"/>
         </p:confirmDialog>
+
+        <p:dialog widgetVar="diaCarIma" header="Cargar Imagen" width="780">
+            <p:fileUpload id="filUplIma" listener="#{pacienteBean.subirImagen}" mode="advanced" dragDropSupport="false"
+                          update=":frmMen:graFotPac menGen" sizeLimit="500000" fileLimit="1" 
+                          allowTypes="/(\.|\/)(jpe?g|png)$/" oncomplete="PF('diaCarIma').hide();"/>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>

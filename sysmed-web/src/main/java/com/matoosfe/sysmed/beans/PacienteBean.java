@@ -8,11 +8,15 @@ import com.matoosfe.sysmed.beans.util.AbstractManagedBean;
 import com.matoosfe.sysmed.controllers.PacienteFacade;
 import com.matoosfe.sysmed.controllers.TipoPacienteFacade;
 import com.matoosfe.sysmed.entities.Paciente;
+import com.matoosfe.sysmed.entities.Paciente_;
 import com.matoosfe.sysmed.entities.TipoPaciente;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -20,14 +24,17 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
  * @author martosfre
  */
 @Named
-@ViewScoped
+@SessionScoped
 public class PacienteBean extends AbstractManagedBean implements Serializable {
 
     @Getter
@@ -60,6 +67,9 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
     @Getter
     @Setter
     private String pathImagen;
+    @Getter
+    @Setter
+    private StreamedContent imagenBinaria;
 
     @Inject
     private PacienteFacade adminPaciente;
@@ -162,21 +172,21 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
             anadirError("Error al procesar la operación:" + e.getMessage());
         }
     }
-    
 
     /**
      * Método para seleccionar un paciente
-     * @param ev 
+     *
+     * @param ev
      */
     public void seleccionarFila(SelectEvent<Paciente> ev) {
         this.pacienteSel = ev.getObject();
     }
-    
+
     /**
      * Método para cargar un paciente
      */
-    public void editar(){
-        if(pacienteSel != null){
+    public void editar() {
+        if (pacienteSel != null) {
             this.paciente = pacienteSel;
             this.idTipPac = paciente.getIdTippac().getIdTippac(); //cuando no se utiliza convertidor
             //Validar la máscara
@@ -185,31 +195,45 @@ public class PacienteBean extends AbstractManagedBean implements Serializable {
                     this.tipoIden = "CED";
                     break;
                 case 13:
-                    this.tipoIden ="RUC"; 
+                    this.tipoIden = "RUC";
                     break;
                 default:
                     this.tipoIden = "PAS";
                     break;
             }
             actualizarMascaraIdentificacion();
+
+            //Actuaizar Imagen
+            InputStream fis = new ByteArrayInputStream(paciente.getFotoPac());
+            imagenBinaria = DefaultStreamedContent.builder().stream(() -> fis).build();
+            
             PrimeFaces.current().executeScript("PF('diaNuePac').show();");
-        }else{
+        } else {
             anadirError("Se debe seleccionar un paciente");
         }
     }
-    
+
     /**
      * Método para eliminar un paciente
      */
-    public void eliminar(){
-        if(pacienteSel != null){
+    public void eliminar() {
+        if (pacienteSel != null) {
             adminPaciente.eliminar(pacienteSel);
             anadirInfo("Paciente eliminado correctamente");
             buscarPacientes();
             resetearFormulario();
-        }else{
-             anadirError("Se debe seleccionar un paciente");
+        } else {
+            anadirError("Se debe seleccionar un paciente");
         }
+    }
+
+    /**
+     * Método para subir una imagen
+     */
+    public void subirImagen(FileUploadEvent event) {
+        InputStream fis = new ByteArrayInputStream(event.getFile().getContent());
+        imagenBinaria = DefaultStreamedContent.builder().stream(() -> fis).build();
+        this.paciente.setFotoPac(event.getFile().getContent());
     }
 
     /**
