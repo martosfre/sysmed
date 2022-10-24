@@ -48,17 +48,17 @@ public class IndexBean implements Serializable {
      * @return
      */
     public String validarUsuario() {
-        FacesMessage mensajeJSF = new FacesMessage();
 
         if (txtNomUsu.equals("admin") && txtClaUsu.equals("1234")) {
-            //Mensaje de Información
-            mensajeJSF.setSummary("Usuario correcto, bienvenido!!");
-            mensajeJSF.setSeverity(FacesMessage.SEVERITY_INFO);
-            FacesContext.getCurrentInstance().addMessage(null, mensajeJSF);
             banError = false;
-            return null; //Null misma página.
+            /*
+             * Se redirigue a la página de principal qu está configurada como
+             * regla de navegación en el archivo faces-config.xml
+             */
+            return "principal";
         } else {
             //Mensaje de Error
+            FacesMessage mensajeJSF = new FacesMessage();
             mensajeJSF.setSummary("Credenciales Incorrectas");
             mensajeJSF.setSeverity(FacesMessage.SEVERITY_ERROR);
             FacesContext.getCurrentInstance().addMessage(null, mensajeJSF);
@@ -71,8 +71,8 @@ public class IndexBean implements Serializable {
 
         if (txtNomUsu.equals("admin")) {
             estiloBoton = "margin-left: 40%; color:white; background-color:red";
-        }else{
-              this.estiloBoton = "margin-left: 40%;";
+        } else {
+            this.estiloBoton = "margin-left: 40%;";
         }
     }
 

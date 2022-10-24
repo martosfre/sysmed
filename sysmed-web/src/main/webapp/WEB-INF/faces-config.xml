@@ -23,5 +23,26 @@
               xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
-
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>principal</from-outcome>
+            <to-view-id>/pages/principal.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/pages/principal.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>paciente</from-outcome>
+            <to-view-id>/pages/admin/paciente.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>tipoPaciente</from-outcome>
+            <to-view-id>/pages/admin/tipoPaciente.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>historiaClinica</from-outcome>
+            <to-view-id>/pages/atencion/historiaClinica.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
