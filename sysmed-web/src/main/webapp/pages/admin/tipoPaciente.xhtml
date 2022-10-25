@@ -11,16 +11,16 @@
         <p:growl id="menGen"/>
         <p:toolbar>
             <p:toolbarGroup align="left">
-                <p:outputLabel value="Administración Tipo de Paciente"/>
+                <p:outputLabel value="#{inter.tituloPaginaTipoPaciente}"/>
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
-                <p:commandButton value="Nuevo" process="@this" actionListener="#{tipoPacienteBean.resetearFormulario}" 
+                <p:commandButton value="#{inter.btnNuevo}" process="@this" actionListener="#{tipoPacienteBean.resetearFormulario}" 
                                  update="panGriTipPac datTabTipPac menGen" icon="pi pi-file"/> <!-- PrimeIcons -->
-                <p:commandButton value="Guardar" process="@this panGriTipPac" actionListener="#{tipoPacienteBean.guardar}" 
+                <p:commandButton value="#{inter.btnGuardar}" process="@this panGriTipPac" actionListener="#{tipoPacienteBean.guardar}" 
                                  update="panGriTipPac datTabTipPac menGen" icon="far fa-save"/> <!-- FontAwesome -->
-                <p:commandButton value="Editar" process="@this" actionListener="#{tipoPacienteBean.editar}" 
+                <p:commandButton value="#{inter.btnEditar}" process="@this" actionListener="#{tipoPacienteBean.editar}" 
                                  update="panGriTipPac menGen" icon="far fa-edit"/>
-                <p:commandButton value="Eliminar" onclick="PF('diaCon').show();" icon="fas fa-trash"/>
+                <p:commandButton value="#{inter.btnEliminar}" onclick="PF('diaCon').show();" icon="fas fa-trash"/>
             </p:toolbarGroup>
         </p:toolbar>
         <br></br>

@@ -25,6 +25,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +34,6 @@ import lombok.Setter;
  *
  * @author martosfre
  */
-@Getter
 @Setter
 @NoArgsConstructor
 
@@ -53,56 +53,79 @@ import lombok.Setter;
 public class Paciente implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_pac")
     private Integer idPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
     @Column(name = "nombre_pac")
     private String nombrePac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
     @Column(name = "apellido_paterno_pac")
     private String apellidoPaternoPac;
+
+    @Getter
     @Size(max = 25)
     @Column(name = "apellido_materno_pac")
     private String apellidoMaternoPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
     @Column(name = "identificacion_pac")
     private String identificacionPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
     @Column(name = "telefono_celular_pac")
     private String telefonoCelularPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 300)
     @Column(name = "direccion_pac")
     private String direccionPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "correo_pac")
     private String correoPac;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_nacimiento_pac")
     @Temporal(TemporalType.DATE)
     private Date fechaNacimientoPac;
+
+    @Getter
     @Lob
     @Column(name = "foto_pac")
     private byte[] fotoPac;
+
+    @Getter
     //Identifica el nombre de la columna de la relación.
     @JoinColumn(name = "id_tippac", referencedColumnName = "id_tippac")
     @ManyToOne(optional = false)
     private TipoPaciente idTippac;
+
+    @Getter(onMethod_ = {@XmlTransient}) //@XmlTransient va en el get
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPac")
     private List<HistoriaClinica> historiaClinicaList;
 

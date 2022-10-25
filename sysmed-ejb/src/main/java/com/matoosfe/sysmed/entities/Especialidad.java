@@ -21,6 +21,7 @@ import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +31,6 @@ import lombok.Setter;
  * @author martosfre
  */
 @NoArgsConstructor
-@Getter
 @Setter
 @Entity
 @Table(name = "especialidad")
@@ -51,21 +51,28 @@ import lombok.Setter;
 public class Especialidad implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_esp")
     private Integer idEsp;
+    
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nombre_esp")
     private String nombreEsp;
+    
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 300)
     @Column(name = "descripcion_esp")
     private String descripcionEsp;
+    
+    @Getter(onMethod_ = { @XmlTransient})
     @OneToMany(mappedBy = "especialidad")
     private List<DetalleHistoriaClinica> detallesHisCli;
 

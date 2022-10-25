@@ -24,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +33,6 @@ import lombok.Setter;
  *
  * @author martosfre
  */
-@Getter
 @Setter
 @NoArgsConstructor
 
@@ -46,27 +46,35 @@ import lombok.Setter;
 public class HistoriaClinica implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_his_cli")
     private Integer idHisCli;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_apertura_hiscli")
     @Temporal(TemporalType.DATE)
     private Date fechaAperturaHiscli;
+
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
     @Column(name = "numero_historia_clinica")
     private String numeroHistoriaClinica;
+
+    @Getter
     @JoinColumn(name = "id_pac", referencedColumnName = "id_pac")
     @ManyToOne(optional = false)
     private Paciente idPac;
+
+    @Getter(onMethod_ = {@XmlTransient})
     @OneToMany(mappedBy = "historiaClinica", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<DetalleHistoriaClinica> detallesHistoria;
-
 
     public HistoriaClinica(Integer idHisCli) {
         this.idHisCli = idHisCli;
@@ -102,5 +110,5 @@ public class HistoriaClinica implements Serializable {
     public String toString() {
         return "com.matoosfe.sysmed.entities.HistoriaClinica[ idHisCli=" + idHisCli + " ]";
     }
-    
+
 }

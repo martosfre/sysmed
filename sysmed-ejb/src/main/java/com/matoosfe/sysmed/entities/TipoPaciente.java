@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,10 +29,8 @@ import lombok.Setter;
  *
  * @author martosfre
  */
-@Getter //Genera todos los getters de las propiedades privadas
 @Setter //Genera todos los setters de las propiedades privadas
 @NoArgsConstructor //Genera un constructor vacío
-
 //Obligatoria
 @Entity
 // Opcional, se coloca cuando el nombre de la tabla es diferente al de clase
@@ -45,6 +44,7 @@ import lombok.Setter;
 public class TipoPaciente implements Serializable { //Marca para garantizar la integridad de la información
 
     private static final long serialVersionUID = 1L;
+    @Getter
     //Obligatoria, define cual propiedad es la clave primaria
     @Id
     /*
@@ -52,6 +52,7 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
      * del motor de la base de datos. Se tiene algunos valores: AUTO, IDENTITY,
      * SEQUENCE y TABLE
      */
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //Opcional y define que la propiedad pued o no recibir valores nulos
     @Basic(optional = false)
@@ -62,6 +63,8 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
      */
     @Column(name = "id_tippac")
     private Integer idTippac;
+    
+    @Getter
     @Basic(optional = false)
     //Opcional y determina que la propiedad no pueda ser nulo (Jakarta Bean Validation)
     @NotNull
@@ -69,6 +72,8 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
     @Size(min = 1, max = 25)
     @Column(name = "nombre_tippac")
     private String nombreTippac;
+    
+    @Getter
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 300)
@@ -89,6 +94,7 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
      * se debe configurar el valor de CascadeType.ALL, CascadeType.PERSIST,
      * CascadeType.REMOVE y otros más
      */
+    @Getter(onMethod_= {@XmlTransient}) //Evitar el ciclo redundante en JPA cuando trabajemos con JAX-WS (Soap)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTippac")
     private List<Paciente> pacienteList;
 

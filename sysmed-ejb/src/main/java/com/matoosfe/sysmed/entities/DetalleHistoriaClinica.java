@@ -67,6 +67,7 @@ public class DetalleHistoriaClinica implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_his_cli", referencedColumnName = "id_his_cli")
     private HistoriaClinica historiaClinica;
+    
     @ManyToOne
     @JoinColumn(name = "id_esp", referencedColumnName = "id_esp")
     private Especialidad especialidad;
