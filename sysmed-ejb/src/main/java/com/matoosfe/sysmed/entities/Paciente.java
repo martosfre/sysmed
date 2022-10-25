@@ -7,6 +7,7 @@ package com.matoosfe.sysmed.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -125,7 +126,7 @@ public class Paciente implements Serializable {
     @ManyToOne(optional = false)
     private TipoPaciente idTippac;
 
-    @Getter(onMethod_ = {@XmlTransient}) //@XmlTransient va en el get
+    @Getter(onMethod_ = {@XmlTransient, @JsonbTransient}) //@XmlTransient va en el get
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPac")
     private List<HistoriaClinica> historiaClinicaList;
 

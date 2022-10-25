@@ -4,9 +4,11 @@
  */
 package com.matoosfe.sysmed.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,7 +96,7 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
      * se debe configurar el valor de CascadeType.ALL, CascadeType.PERSIST,
      * CascadeType.REMOVE y otros más
      */
-    @Getter(onMethod_= {@XmlTransient}) //Evitar el ciclo redundante en JPA cuando trabajemos con JAX-WS (Soap)
+    @Getter(onMethod_= {@XmlTransient, @JsonbTransient}) //Evitar el ciclo redundante en JPA cuando trabajemos con JAX-WS (Soap)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTippac")
     private List<Paciente> pacienteList;
 
@@ -108,6 +110,7 @@ public class TipoPaciente implements Serializable { //Marca para garantizar la i
         this.descripcionTippac = descripcionTippac;
     }
 
+    
     //Permiten diferenciar un objeto de otro.
     @Override
     public int hashCode() {

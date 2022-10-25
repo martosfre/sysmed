@@ -6,6 +6,7 @@ package com.matoosfe.sysmed.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,7 +73,7 @@ public class Especialidad implements Serializable {
     @Column(name = "descripcion_esp")
     private String descripcionEsp;
     
-    @Getter(onMethod_ = { @XmlTransient})
+    @Getter(onMethod_ = { @XmlTransient, @JsonbTransient})
     @OneToMany(mappedBy = "especialidad")
     private List<DetalleHistoriaClinica> detallesHisCli;
 
