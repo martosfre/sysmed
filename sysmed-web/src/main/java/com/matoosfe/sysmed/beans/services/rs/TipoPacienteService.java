@@ -16,7 +16,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Servicio Web para administrar las operaciones de Tipo de Paciente
@@ -28,32 +31,46 @@ import javax.ws.rs.core.MediaType;
 @Produces(value = MediaType.APPLICATION_JSON)
 public class TipoPacienteService {
 
+    @Context
+    private HttpHeaders httpHeaders;
+
     @Inject
     private TipoPacienteFacade adminTipoPaciente;
 
     @GET
-    @Path("/{id}")
+    @Path("/{id}") //http;//localhost:8080/sysmed/api/tipoPaciente/1
     public TipoPaciente consultarPorId(@PathParam(value = "id") int idTipPac) {
         return adminTipoPaciente.buscarPorId(idTipPac);
     }
 
     @GET
-    @Path("/consultarTodos")
+    @Path("/consultarTodos")//http;//localhost:8080/sysmed/api/tipoPaciente/consultarTodos
     public List<TipoPaciente> consultarTodos() {
         return adminTipoPaciente.buscarTodos();
     }
 
-    @POST
+    @POST //Guardar
     public String guardar(TipoPaciente tipoPaciente) {
+        String mensaje = null;
         try {
-            adminTipoPaciente.guardar(tipoPaciente);
-            return "Tipo Paciente guardado correctamente";
+            MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
+            if (headers.containsKey("usuario") && headers.containsKey("clave")) {
+                if (headers.get("usuario").get(0).equals("admin")
+                        && headers.get("clave").get(0).equals("1234")) {
+                    adminTipoPaciente.guardar(tipoPaciente);
+                    mensaje = "Tipo Paciente guardado correctamente";
+                }
+            } else {
+                mensaje = "Usuario no autorizado";
+            }
+            return mensaje;
+
         } catch (Exception e) {
             return "Error al Guardar:" + e.getMessage();
         }
     }
 
-    @PUT
+    @PUT //Actualizar
     public String actualizar(TipoPaciente tipoPaciente) {
         try {
             adminTipoPaciente.actualizar(tipoPaciente);
@@ -63,9 +80,10 @@ public class TipoPacienteService {
         }
     }
 
-    @DELETE
+    @DELETE//Eliminar
     @Path("/{id}")
-    public String eliminar(@PathParam(value = "id")int idTipPac) {
+    //@JWTTokenNeeded
+    public String eliminar(@PathParam(value = "id") int idTipPac) {
         try {
             TipoPaciente tipoPaciente = adminTipoPaciente.buscarPorId(idTipPac);
             adminTipoPaciente.eliminar(tipoPaciente);

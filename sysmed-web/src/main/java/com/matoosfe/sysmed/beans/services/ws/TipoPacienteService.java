@@ -7,17 +7,25 @@ package com.matoosfe.sysmed.beans.services.ws;
 import com.matoosfe.sysmed.controllers.TipoPacienteFacade;
 import com.matoosfe.sysmed.entities.TipoPaciente;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 /**
+ * Servicio Web con SOAP para administrar las operaciones de tipo de paciente
  *
  * @author martosfre
  */
 @WebService(serviceName = "TipoPacienteService")
 public class TipoPacienteService {
+
+    @Resource
+    private WebServiceContext wsctx;
 
     @Inject
     private TipoPacienteFacade adminTipoPaciente;
@@ -46,8 +54,20 @@ public class TipoPacienteService {
      */
     public String guardarTipoPaciente(TipoPaciente tipoPaciente) {
         try {
-            adminTipoPaciente.guardar(tipoPaciente);
-            return "Tipo Paciente registrado correctamente";
+            MessageContext mctx = wsctx.getMessageContext();
+
+            Map http_headers = (Map) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
+            List<String> usuario = (List<String>) http_headers.get("usuario");
+            List<String> clave = (List<String>) http_headers.get("clave");
+
+            if (usuario != null && usuario.get(0).equals("admin")
+                    && clave != null && clave.get(0).equals("1234")) {
+
+                adminTipoPaciente.guardar(tipoPaciente);
+                return "Tipo Paciente registrado correctamente";
+            } else {
+                return "Usuario no autorizado";
+            }
         } catch (Exception e) {
             return "Error al Guardar:" + e.getMessage();
         }
